@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "SNMP Console",
+  "version": "1.0.0",
+  "identifier": "com.ts-snmp.console",
+  "build": {
+    "beforeDevCommand": "cd .. && bun run build:sidecar && bun --hot index.ts",
+    "beforeBuildCommand": "cd .. && bun run build:desktop",
+    "devUrl": "http://127.0.0.1:3000",
+    "frontendDist": "../../frontend/dist"
+  },
+  "app": {
+    "windows": [],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["deb"],
+    "category": "Utility",
+    "shortDescription": "A local SNMP client console",
+    "longDescription": "A local desktop interface for running SNMP Get and Walk operations.",
+    "icon": ["icons/icon.png", "icons/icon.ico"],
+    "externalBin": ["binaries/snmp-backend"]
+  }
+}

@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Generated frontend and desktop build artifacts
+/frontend/dist/
+/desktop/src-tauri/target/
+/desktop/src-tauri/gen/
+/desktop/src-tauri/binaries/snmp-backend-*
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Logs, caches, and generated metadata
+*.log
+.cache/
+*.tsbuildinfo
+
+# Operating system files
+.DS_Store
+Thumbs.db

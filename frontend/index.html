@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101a29" />
+    <title>SNMP Console</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="SNMP Console home">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span>SNMP <strong>Console</strong></span>
+        </a>
+        <div class="local-badge"><span></span> Local only</div>
+      </header>
+
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">NETWORK MANAGEMENT</p>
+        <h1 id="page-title">Explore your agent.</h1>
+        <p class="intro-copy">Query an SNMP device and inspect its values. Walk results stream into the table as they arrive.</p>
+      </section>
+
+      <section class="workspace" aria-label="SNMP query workspace">
+        <form id="snmp-form" class="query-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">NEW QUERY</p>
+              <h2>Connection</h2>
+            </div>
+            <span class="protocol-pill">UDP · 161</span>
+          </div>
+
+          <div class="form-grid">
+            <label class="field field-wide">
+              <span>Agent IP address</span>
+              <input id="host" name="host" type="text" inputmode="url" autocomplete="off" placeholder="192.168.1.10" required />
+            </label>
+            <label class="field">
+              <span>Operation</span>
+              <select id="operation" name="operation">
+                <option value="walk">Walk subtree</option>
+                <option value="get">Get one OID</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>SNMP version</span>
+              <select id="version" name="version">
+                <option value="v2c">SNMPv2c</option>
+                <option value="v1">SNMPv1</option>
+                <option value="v3">SNMPv3 (USM)</option>
+              </select>
+            </label>
+            <label class="field field-wide">
+              <span id="oid-label">Root OID</span>
+              <input id="oid" name="oid" type="text" value="1.3.6.1.2.1.1" autocomplete="off" spellcheck="false" required />
+              <small id="oid-help">Walks this OID and its descendants.</small>
+            </label>
+          </div>
+
+          <div class="credentials-group" id="community-group">
+            <h3>Community</h3>
+            <label class="field">
+              <span>Community string</span>
+              <input id="community" name="community" type="password" value="public" autocomplete="new-password" />
+            </label>
+          </div>
+
+          <div class="credentials-group" id="v3-group" hidden>
+            <h3>SNMPv3 USM</h3>
+            <div class="form-grid">
+              <label class="field">
+                <span>Security level</span>
+                <select id="security-level" name="securityLevel">
+                  <option value="noAuthNoPriv">noAuthNoPriv</option>
+                  <option value="authNoPriv">authNoPriv</option>
+                  <option value="authPriv">authPriv</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Username</span>
+                <input id="username" name="username" type="text" autocomplete="off" />
+              </label>
+              <label class="field" id="auth-password-group" hidden>
+                <span>Authentication passphrase (SHA-1)</span>
+                <input id="auth-password" name="authPassword" type="password" autocomplete="new-password" />
+              </label>
+              <label class="field" id="privacy-password-group" hidden>
+                <span>Privacy passphrase (DES)</span>
+                <input id="privacy-password" name="privacyPassword" type="password" autocomplete="new-password" />
+              </label>
+              <label class="field field-wide">
+                <span>Context name <em>optional</em></span>
+                <input id="context-name" name="contextName" type="text" autocomplete="off" />
+              </label>
+            </div>
+          </div>
+
+          <details class="advanced-settings">
+            <summary>Advanced settings</summary>
+            <div class="form-grid advanced-grid">
+              <label class="field">
+                <span>UDP port</span>
+                <input id="port" name="port" type="number" min="1" max="65535" value="161" required />
+              </label>
+              <label class="field">
+                <span>Timeout (ms)</span>
+                <input id="timeout" name="timeoutMs" type="number" min="1" max="60000" value="1000" required />
+              </label>
+              <label class="field">
+                <span>Retries</span>
+                <input id="retries" name="retries" type="number" min="0" max="5" value="1" required />
+              </label>
+            </div>
+          </details>
+
+          <div class="form-footer">
+            <p class="privacy-note"><span aria-hidden="true">⌑</span> Credentials are sent only to this local server.</p>
+            <div class="action-group">
+              <button id="cancel-button" class="button button-secondary" type="button" hidden>Cancel walk</button>
+              <button id="run-button" class="button button-primary" type="submit">
+                <span id="run-button-label">Run walk</span>
+                <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <section class="results-panel" aria-labelledby="results-title">
+          <div class="results-heading">
+            <div>
+              <p class="eyebrow">OUTPUT</p>
+              <h2 id="results-title">Results</h2>
+            </div>
+            <span id="result-count" class="result-count">0 bindings</span>
+          </div>
+          <div id="status" class="status status-idle" role="status" aria-live="polite">
+            <span class="status-dot"></span>
+            <span id="status-message">Configure an agent and run a query.</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Object identifier</th><th>Type</th><th>Value</th></tr>
+              </thead>
+              <tbody id="results-body">
+                <tr id="empty-row" class="empty-row"><td colspan="3">Your SNMP bindings will appear here.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <footer class="page-footer">
+        <span>SNMP Console</span>
+        <span>Listening on this machine only</span>
+      </footer>
+    </main>
+    <script type="module" src="./frontend.ts"></script>
+  </body>
+</html>

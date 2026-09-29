@@ -1,0 +1,13 @@
+[package]
+name = "ts-snmp-desktop"
+version = "1.0.0"
+description = "Local desktop console for SNMP operations"
+authors = ["ts-snmp contributors"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
